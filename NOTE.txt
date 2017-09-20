@@ -1,0 +1,108 @@
+http://developer.51cto.com/art/201506/479127.htm
+http://www.gruntjs.net/getting-started
+
+1. 是一套前端自动化工具，一个基于nodeJs的命令行工具，一般用于:
+    ① 压缩文件
+    ② 合并文件
+    ③ 简单语法检查
+
+2. Grunt和 Grunt 插件是通过 npm 安装并管理的，npm是 Node.js 的包管理器。
+
+3. 安装grunt-cli  cli被翻译为“命令行”
+    npm install -g grunt-cli (台式机已安装grunt)
+
+4. 创建简单的网站
+    test_grunt 文件夹下，创建build,src,test 三个文件夹，Gruntfile.js,package.json.
+
+    npm init 创建package.json文件，可以全部默认
+    {
+      "name": "grunt",
+      "version": "1.0.0",
+      "description": "",
+      "main": "gruntfile.js",
+      "directories": {
+        "test": "test"
+      },
+      "dependencies": {},
+      "devDependencies": {
+      },
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "author": "sunny",
+      "license": "ISC"
+    }
+
+5. 安装grunt
+    接下来我们会有一系列插件的安装，他们的安装过程和grunt一样。但是他们的执行都是基于grunt的，因此才能把grunt叫做一个“构建工具”。Grunt没有具体的作用，但是它能把有具体作用的一个一个插件组合起来，形成一个整体效应。
+    例如，你需要检查js语法错误，然后再去压缩js代码。如果这两步你都去手动操作，会耗费很多成本。Grunt就能让你省去这些手动操作的成本。
+    注意，这里安装grunt不再是全局安装了，需要你在控制台进入到网站或系统的具体目录下。这里我们进入 D:\grunt_test 目录下。然后输入以下命令。
+    npm install grunt --save-dev
+    “—save-dev”的意思是，在当前目录安装grunt的同时，顺便把grunt保存为这个目录的开发依赖项。看到“开发依赖项”这一次，是不是觉得有些眼熟？上文在配置package.json时，其中的“devDependencies”中就会存储开发依赖项。
+
+
+6. 配置Gruntfile.js
+    //包装函数
+    module.exports = function(grunt){
+        //任务配置，所有插件的配置信息
+        grunt.initConfig({
+            //获取package.json的信息
+            pkg: grunt.file.readJSON('package.json')
+        });
+        //告诉grunt当我们在终端中输入grunt时需要些什么
+        grunt.registerTask('default',[]);
+    }
+
+7. Grunt插件介绍
+    Contrib-jshint ——javascript语法错误检查；
+    Contrib-watch  -- 实时监控文件变化，调用相应的任务重新执行
+    Contrib-clean  -- 清空文件，文件夹
+    Contrib-uglify -- 压缩javascript 代码
+    Contrib-copy   -- 复制文件，文件夹
+    Contrib-concat -- 合并多个文件的代码到一个文件中
+    Karma     -- 前端自动化测试工具
+
+8. 使用uglify插件（压缩javascript代码）
+    ① npm install grunt-contrib-uglify --save-dev  安装uglify插件
+    ② 配置gruntfile.js,
+        grunt.initConfig({
+                //获取package.json的信息
+                pkg: grunt.file.readJSON('package.json'),
+                //uglify插件的配置信息
+                uglify:{
+                    options:{
+                        banner:'/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd")%> - <%= pkg.author%>*/'
+                    },
+                    build:{
+                        src:'src/test.js',
+                        dest:'build/<%= pkg.name%>-<%=pkg.version%>.js.min.js'
+                    }
+                }
+        });
+        grunt.loadNpmTasks('grunt-contrib-uglify');
+        grunt.registerTask('default',['uglify']);
+    ③  grunt    对文件进行压缩
+
+9. 使用jshint 插件（检查javscript语法错误）
+    ① npm install grunt-contrib-jshint --save-dev
+    ② jshint:{
+                 all:['src/test.js','gruntfile.js']
+              }
+       grunt.loadNpmTasks('grunt-contrib-jshint')
+       grunt.registerTask('default',['jshint','uglify']);
+    ③ grunt
+
+10. 使用csslint插件（检查css语法错误）
+    npm install grunt-contrib-csslint --save-dev
+
+11. 使用watch插件（真正实现自动化）
+    npm install grunt-contrib-watch --save-dev
+
+12. 上文中所谓的“build”
+    这里可以用任何字符串代替“build”（但要符合js语法规则）。甚至，你可以把“build”指向的内容分开来写。这样对多人协同开发很友好。
+
+13. 批量安装插件
+    上传源码时候，肯定会把package.json上传上去，而package.json中的“devDependencies”就记录了这个系统的开发依赖项，然后我通过nodejs的npm即可批量安装。
+    npm install
+
+
